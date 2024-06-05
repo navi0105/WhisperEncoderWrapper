@@ -1,5 +1,5 @@
 import torch
-from wrapper.wrapper import WhisperEncoderWrapper
+from whisper_encoder_wrapper.wrapper import WhisperEncoderWrapper
 
 def test_load_wrapper():
     encoder = WhisperEncoderWrapper('base', 'cpu')
