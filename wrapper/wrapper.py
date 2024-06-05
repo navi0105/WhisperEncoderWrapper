@@ -40,7 +40,10 @@ DEFAULT_DIMS = ModelDimensions(
     n_text_layer=6,
 )
 
-def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
+def _download(url: str, root: str) -> Union[bytes, str]:
+    """
+        Function for downloading checkpoint files of pretrained Whisper model, modified from OpenAI's Whisper library ().
+    """
     os.makedirs(root, exist_ok=True)
 
     expected_sha256 = url.split("/")[-2]
@@ -53,7 +56,7 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
         with open(download_target, "rb") as f:
             model_bytes = f.read()
         if hashlib.sha256(model_bytes).hexdigest() == expected_sha256:
-            return model_bytes if in_memory else download_target
+            return download_target
         else:
             warnings.warn(
                 f"{download_target} exists, but the SHA256 checksum does not match; re-downloading the file"
@@ -81,12 +84,12 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
             "Model has been downloaded but the SHA256 checksum does not not match. Please retry loading the model."
         )
 
-    return model_bytes if in_memory else download_target
+    return download_target
 
 
 def _load_from_whisper(
-        model_name: str, 
-        device: str="cuda"
+        model_name: str,
+        device: str="cuda",
     ) -> Tuple[dict, ModelDimensions]:
 
     default = os.path.join(os.path.expanduser("~"), ".cache")
@@ -98,7 +101,6 @@ def _load_from_whisper(
     checkpoint_file = _download(
         _MODELS[model_name], 
         download_root, 
-        in_memory=False
     )
 
     with open(checkpoint_file, "rb") as fp:
@@ -114,7 +116,6 @@ def _load_from_whisper(
 
     del checkpoint
     return encoder_state_dict, dims
-
 
 def _load_from_checkpoint(
         model_path: str, 
@@ -162,8 +163,7 @@ class WhisperEncoderWrapper(nn.Module):
             self.encoder.load_state_dict(encoder_state_dict)
 
         self.encoder = self.encoder.to(device)
-        
-            
+
     def save_model(self, path: str):
         state_dict = {}
         state_dict["dims"] = self.dims.__dict__
@@ -173,13 +173,3 @@ class WhisperEncoderWrapper(nn.Module):
 
     def forward(self, x):
         return self.encoder(x)
-
-
-if __name__ == "__main__":
-    model = WhisperEncoderWrapper('base')
-
-    sample_input = torch.randn(16, 80, 3000).to('cuda')
-
-    with torch.no_grad():
-        output = model(sample_input)
-    
