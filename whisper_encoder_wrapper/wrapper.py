@@ -42,7 +42,7 @@ DEFAULT_DIMS = ModelDimensions(
 
 def _download(url: str, root: str) -> Union[bytes, str]:
     """
-        Function for downloading checkpoint files of pretrained Whisper model, modified from OpenAI's Whisper library ().
+        Function for downloading checkpoint files of pretrained Whisper model, modified from OpenAI's Whisper library.
     """
     os.makedirs(root, exist_ok=True)
 
@@ -163,6 +163,9 @@ class WhisperEncoderWrapper(nn.Module):
             self.encoder.load_state_dict(encoder_state_dict)
 
         self.encoder = self.encoder.to(device)
+
+    def get_embed_dim(self) -> int:
+        return self.dims.n_audio_state
 
     def save_model(self, path: str):
         state_dict = {}
