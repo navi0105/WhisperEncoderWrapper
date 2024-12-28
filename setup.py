@@ -3,7 +3,7 @@ import setuptools
 setuptools.setup(
     name="WhisperEncoderWrapper",
     description="A simple wrapper of OpenAI Whisper's encoder model.",
-    version="0.0.1",
+    version="0.0.2",
     author="Ivan Leong",
     author_email="ivan000105@gmail.com",
     readme="README.md",
@@ -15,7 +15,8 @@ setuptools.setup(
     install_requires=[
         'torch',
         'tqdm',
-        'openai-whisper'
+        'openai-whisper',
+        'transformers'
     ],
     extras_require={"dev": ["pytest"]}
 )
