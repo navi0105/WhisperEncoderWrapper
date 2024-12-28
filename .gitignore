@@ -1,4 +1,4 @@
 tests/__pycache__/
 whisper_wrapper/__pycache__/
 
-playground.ipynb
+.pytest_cache/
