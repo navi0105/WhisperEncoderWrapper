@@ -16,7 +16,7 @@ pip install -e .
 ## Example
 ```python
 >>> import torch
->>> from whisper_encoder_wrapper.wrapper import WhisperEncoderWrapper
+>>> from whisper_wrapper.wrapper import WhisperEncoderWrapper
 >>> 
 >>> encoder = WhisperEncoderWrapper("large-v3", device="cuda")
 >>> 
